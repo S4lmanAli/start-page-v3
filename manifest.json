@@ -27,7 +27,7 @@
   },
 
   "permissions": [
-    "storage"
+    "search"
   ],
 
   "web_accessible_resources": [

@@ -258,11 +258,20 @@ function updateGreeting(hour) {
 function performSearch(query) {
     if (!query.trim()) return;
     
-    const engine = allSearchEngines[currentEngine];
-    if (!engine) return;
-    
-    const searchUrl = engine.url + encodeURIComponent(query);
-    window.location.href = searchUrl;
+    // Use Chrome Search API if available (respects user's default search engine)
+    if (typeof chrome !== 'undefined' && chrome.search && chrome.search.query) {
+        chrome.search.query({
+            text: query,
+            disposition: 'CURRENT_TAB'
+        });
+    } else {
+        // Fallback for Firefox or when Chrome Search API is not available
+        const engine = allSearchEngines[currentEngine];
+        if (!engine) return;
+        
+        const searchUrl = engine.url + encodeURIComponent(query);
+        window.location.href = searchUrl;
+    }
 }
 
 function setSearchEngine(engine) {
