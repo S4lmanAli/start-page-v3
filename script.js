@@ -128,10 +128,20 @@ function loadSettings() {
         openWeatherApiKey: '',
         linkBehavior: 'same',
         showKeyboardHints: 'true',
+        headerLeft: 'greeting',
+        headerRight: 'time-date',
         footerLeft: 'weather',
         footerCenter: 'blank',
         footerRight: 'quotes',
-        socialLinks: []
+        socialLinks: [],
+        customColors: {
+            primary: '#cba6f7',
+            secondary: '#89b4fa',
+            accent: '#94e2d5',
+            background: '#1e1e2e',
+            surface: '#313244',
+            text: '#cdd6f4'
+        }
     };
     
     return {
@@ -149,10 +159,13 @@ function loadSettings() {
         openWeatherApiKey: localStorage.getItem('openWeatherApiKey') ??  defaults.openWeatherApiKey,
         linkBehavior: localStorage.getItem('linkBehavior') ?? defaults.linkBehavior,
         showKeyboardHints: localStorage.getItem('showKeyboardHints') ?? defaults.showKeyboardHints,
+        headerLeft: localStorage.getItem('headerLeft') ?? defaults.headerLeft,
+        headerRight: localStorage.getItem('headerRight') ?? defaults.headerRight,
         footerLeft: localStorage.getItem('footerLeft') ?? defaults.footerLeft,
         footerCenter: localStorage.getItem('footerCenter') ?? defaults.footerCenter,
         footerRight: localStorage.getItem('footerRight') ?? defaults.footerRight,
-        socialLinks: JSON.parse(localStorage.getItem('socialLinks')) ?? defaults.socialLinks
+        socialLinks: JSON.parse(localStorage.getItem('socialLinks')) ?? defaults.socialLinks,
+        customColors: JSON.parse(localStorage.getItem('customColors') || JSON.stringify(defaults.customColors))
     };
 }
 
@@ -212,10 +225,67 @@ function applyTheme(theme) {
 }
 
 function applyColorScheme(scheme) {
+    // Clear custom colors when switching away from custom
+    if (scheme !== 'custom') {
+        clearCustomColors();
+    }
+    
     document.documentElement.setAttribute('data-scheme', scheme);
     saveSettings('colorScheme', scheme);
+    
+    // Apply custom colors if custom scheme selected
+    if (scheme === 'custom') {
+        applyCustomColors();
+    }
+    
     // Update color mode visibility based on scheme
     updateColorModeVisibility();
+}
+
+function saveCustomColor(property, value) {
+    const customColors = settings.customColors || {};
+    customColors[property] = value;
+    saveSettings('customColors', customColors);
+    
+    if (settings.colorScheme === 'custom') {
+        applyCustomColors();
+    }
+}
+
+function applyCustomColors() {
+    const customColors = settings.customColors || {};
+    const root = document.documentElement;
+    
+    if (customColors.primary) root.style.setProperty('--primary', customColors.primary);
+    if (customColors.secondary) root.style.setProperty('--secondary', customColors.secondary);
+    if (customColors.accent) root.style.setProperty('--accent', customColors.accent);
+    if (customColors.background) {
+        root.style.setProperty('--base', customColors.background);
+        root.style.setProperty('--crust', customColors.background);
+    }
+    if (customColors.surface) {
+        root.style.setProperty('--surface0', customColors.surface);
+        root.style.setProperty('--surface1', customColors.surface);
+        root.style.setProperty('--mantle', customColors.surface);
+    }
+    if (customColors.text) {
+        root.style.setProperty('--text', customColors.text);
+        root.style.setProperty('--subtext0', customColors.text);
+    }
+}
+
+function clearCustomColors() {
+    const root = document.documentElement;
+    root.style.removeProperty('--primary');
+    root.style.removeProperty('--secondary');
+    root.style.removeProperty('--accent');
+    root.style.removeProperty('--base');
+    root.style.removeProperty('--crust');
+    root.style.removeProperty('--surface0');
+    root.style.removeProperty('--surface1');
+    root.style.removeProperty('--mantle');
+    root.style.removeProperty('--text');
+    root.style.removeProperty('--subtext0');
 }
 
 function updateColorModeVisibility() {
@@ -380,7 +450,7 @@ function renderSearchEngines() {
 }
 
 function updateKeyboardHints() {
-    const hintsContainer = document. querySelector('.keyboard-hints');
+    const hintsContainer = document.querySelector('.keyboard-hints');
     if (!hintsContainer) return;
     
     // Show or hide keyboard hints based on setting
@@ -581,6 +651,78 @@ function renderSocialLinks() {
 }
 
 // ========================================
+// Header Management
+// ========================================
+
+function updateHeader() {
+    const header = document.querySelector('.header');
+    if (!header) return;
+    
+    // Clear existing content
+    header.innerHTML = '';
+    
+    // Create sections based on settings
+    const leftWidget = createHeaderWidget(settings.headerLeft, 'left');
+    const rightWidget = createHeaderWidget(settings.headerRight, 'right');
+    
+    // Check if both widgets are blank
+    const bothBlank = settings.headerLeft === 'blank' && settings.headerRight === 'blank';
+    
+    if (bothBlank) {
+        header.style.display = 'none';
+        return;
+    }
+    
+    header.style.display = 'flex';
+    
+    if (leftWidget) {
+        header.appendChild(leftWidget);
+    }
+    
+    if (rightWidget) {
+        rightWidget.classList.add('header-right');
+        header.appendChild(rightWidget);
+    }
+}
+
+function createHeaderWidget(type, position) {
+    if (type === 'blank') return null;
+    
+    if (type === 'greeting') {
+        const widget = document.createElement('div');
+        widget.className = 'greeting';
+        widget.innerHTML = `
+            <span class="icon" id="greeting-icon"><i class="fa-solid fa-sun"></i></span>
+            <span class="greeting-text" id="greeting">Good evening</span>
+        `;
+        // Reassign greetingElement
+        setTimeout(() => {
+            greetingElement = document.getElementById('greeting');
+            updateGreeting(new Date().getHours());
+        }, 0);
+        return widget;
+    }
+    
+    if (type === 'time-date') {
+        const widget = document.createElement('div');
+        widget.className = 'datetime';
+        widget.innerHTML = `
+            <span class="time" id="time">00:00</span>
+            <span class="date" id="date">Loading...</span>
+        `;
+        // Reassign timeElement and dateElement
+        setTimeout(() => {
+            timeElement = document.getElementById('time');
+            dateElement = document.getElementById('date');
+            updateDateTime();
+        }, 0);
+        return widget;
+    }
+    
+    return null;
+}
+
+// ========================================
 // Footer Management
 // ========================================
 
@@ -597,6 +739,16 @@ function updateFooter() {
         { position: 'center', setting: settings.footerCenter },
         { position: 'right', setting: settings.footerRight }
     ];
+    
+    // Check if all widgets are blank
+    const allBlank = sections.every(section => section.setting === 'blank');
+    
+    if (allBlank) {
+        footer.style.display = 'none';
+        return;
+    }
+    
+    footer.style.display = 'flex';
     
     sections.forEach(section => {
         const widget = createFooterWidget(section.setting);
@@ -703,11 +855,11 @@ function updateGridLayout() {
     linksGrid.classList.remove('grid-single', 'grid-even', 'grid-odd');
     
     if (categoryCount === 1) {
-        linksGrid. classList.add('grid-single');
+        linksGrid.classList.add('grid-single');
     } else if (categoryCount % 2 === 0) {
         linksGrid.classList.add('grid-even');
     } else {
-        linksGrid.classList. add('grid-odd');
+        linksGrid.classList.add('grid-odd');
     }
 }
 
@@ -741,9 +893,9 @@ function initSettings() {
     });
     
     // Close on Escape key
-    document. addEventListener('keydown', (e) => {
+    document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-            if (settingsOverlay.classList. contains('active')) {
+            if (settingsOverlay.classList.contains('active')) {
                 settingsOverlay.classList.remove('active');
             }
         }
@@ -766,6 +918,8 @@ function initSettings() {
                 renderLinksSettings();
             } else if (tabId === 'social') {
                 renderSocialLinksSettings();
+            } else if (tabId === 'header') {
+                renderHeaderSettings();
             } else if (tabId === 'footer') {
                 renderFooterSettings();
             } else if (tabId === 'help') {
@@ -777,7 +931,7 @@ function initSettings() {
     // Toggle button handlers
     document.querySelectorAll('.toggle-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            const setting = btn.dataset. setting;
+            const setting = btn.dataset.setting;
             const value = btn.dataset.value;
             
             saveSettings(setting, value);
@@ -801,6 +955,8 @@ function initSettings() {
                 renderLinksGrid();
             } else if (setting === 'showKeyboardHints') {
                 updateKeyboardHints();
+            } else if (setting === 'headerLeft' || setting === 'headerRight') {
+                updateHeader();
             } else if (setting === 'footerLeft' || setting === 'footerCenter' || setting === 'footerRight') {
                 updateFooter();
             }
@@ -820,9 +976,93 @@ function initSettings() {
     const colorSchemeSelect = document.getElementById('color-scheme-select');
     if (colorSchemeSelect) {
         colorSchemeSelect.addEventListener('change', (e) => {
-            applyColorScheme(e.target.value);
+            const scheme = e.target.value;
+            applyColorScheme(scheme);
+            
+            // Show/hide custom colors section and handle restrictions
+            const customColorsSection = document.getElementById('custom-colors-section');
+            const colorModeToggle = document.getElementById('color-mode-toggle');
+            const themeToggle = document.querySelector('[data-setting="theme"]')?.closest('.setting-item');
+            
+            if (scheme === 'custom') {
+                if (customColorsSection) customColorsSection.style.display = 'block';
+                // Force single color mode for custom theme
+                if (settings.colorMode !== 'single') {
+                    saveSettings('colorMode', 'single');
+                    updateToggleStates();
+                    renderLinksGrid();
+                }
+                // Disable color mode toggle
+                if (colorModeToggle) {
+                    colorModeToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                    });
+                }
+                // Disable theme (light/dark) toggle
+                if (themeToggle) {
+                    const toggleBtns = themeToggle.querySelectorAll('.toggle-btn');
+                    toggleBtns.forEach(btn => {
+                        btn.disabled = true;
+                        btn.style.opacity = '0.5';
+                        btn.style.cursor = 'not-allowed';
+                    });
+                }
+            } else {
+                if (customColorsSection) customColorsSection.style.display = 'none';
+                // Re-enable color mode toggle
+                if (colorModeToggle) {
+                    colorModeToggle.querySelectorAll('.toggle-btn').forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '';
+                        btn.style.cursor = '';
+                    });
+                }
+                // Re-enable theme toggle
+                if (themeToggle) {
+                    const toggleBtns = themeToggle.querySelectorAll('.toggle-btn');
+                    toggleBtns.forEach(btn => {
+                        btn.disabled = false;
+                        btn.style.opacity = '';
+                        btn.style.cursor = '';
+                    });
+                }
+            }
         });
     }
+    
+    // Custom color pickers - sync between color input and hex input
+    const customColorInputs = [
+        { color: 'custom-primary', hex: 'custom-primary-hex', prop: 'primary' },
+        { color: 'custom-secondary', hex: 'custom-secondary-hex', prop: 'secondary' },
+        { color: 'custom-accent', hex: 'custom-accent-hex', prop: 'accent' },
+        { color: 'custom-background', hex: 'custom-background-hex', prop: 'background' },
+        { color: 'custom-surface', hex: 'custom-surface-hex', prop: 'surface' },
+        { color: 'custom-text', hex: 'custom-text-hex', prop: 'text' }
+    ];
+    
+    customColorInputs.forEach(({ color, hex, prop }) => {
+        const colorInput = document.getElementById(color);
+        const hexInput = document.getElementById(hex);
+        
+        if (colorInput && hexInput) {
+            // Color picker changes hex input
+            colorInput.addEventListener('input', (e) => {
+                hexInput.value = e.target.value;
+                saveCustomColor(prop, e.target.value);
+            });
+            
+            // Hex input changes color picker
+            hexInput.addEventListener('input', (e) => {
+                const value = e.target.value;
+                if (/^#[0-9A-F]{6}$/i.test(value)) {
+                    colorInput.value = value;
+                    saveCustomColor(prop, value);
+                }
+            });
+        }
+    });
     
     // Weather location input handler
     const locationInput = document.getElementById('setting-weather-location');
@@ -889,7 +1129,7 @@ function initSettings() {
     const linkCategorySelect = document.getElementById('link-category-select');
     if (linkCategorySelect) {
         linkCategorySelect.addEventListener('change', (e) => {
-            const addLinkBtn = document. getElementById('add-link-btn');
+            const addLinkBtn = document.getElementById('add-link-btn');
             if (addLinkBtn) {
                 addLinkBtn.disabled = !e.target.value;
             }
@@ -911,6 +1151,31 @@ function populateSettingsUI() {
     const colorSchemeSelect = document.getElementById('color-scheme-select');
     if (colorSchemeSelect) {
         colorSchemeSelect.value = settings.colorScheme;
+        
+        // Show/hide custom colors section
+        const customColorsSection = document.getElementById('custom-colors-section');
+        if (customColorsSection) {
+            customColorsSection.style.display = settings.colorScheme === 'custom' ? 'block' : 'none';
+        }
+    }
+    
+    // Populate custom color inputs
+    if (settings.customColors) {
+        const colorMap = {
+            'custom-primary': settings.customColors.primary,
+            'custom-secondary': settings.customColors.secondary,
+            'custom-accent': settings.customColors.accent,
+            'custom-background': settings.customColors.background,
+            'custom-surface': settings.customColors.surface,
+            'custom-text': settings.customColors.text
+        };
+        
+        Object.entries(colorMap).forEach(([id, value]) => {
+            const colorInput = document.getElementById(id);
+            const hexInput = document.getElementById(id + '-hex');
+            if (colorInput) colorInput.value = value;
+            if (hexInput) hexInput.value = value;
+        });
     }
     
     // Populate weather location input
@@ -952,7 +1217,7 @@ function renderCategoriesSettings() {
     if (!container) return;
     
     container.innerHTML = categories.map((category, index) => `
-        <div class="category-item" data-id="${category.id}">
+        <div class="category-item" data-id="${category.id}" draggable="true">
             <span class="icon-preview"><i class="${category.icon}"></i></span>
             <input type="text" class="icon-input" value="${category.icon}" placeholder="fa-solid fa-folder" data-field="icon">
             <input type="text" value="${category.name}" placeholder="Category Name" maxlength="20" data-field="name">
@@ -971,9 +1236,16 @@ function renderCategoriesSettings() {
         const categoryId = item.dataset.id;
         const iconPreview = item.querySelector('.icon-preview i');
         
+        // Drag and drop events
+        item.addEventListener('dragstart', handleCategoryDragStart);
+        item.addEventListener('dragover', handleCategoryDragOver);
+        item.addEventListener('drop', handleCategoryDrop);
+        item.addEventListener('dragend', handleCategoryDragEnd);
+        item.addEventListener('dragleave', handleCategoryDragLeave);
+        
         item.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', () => {
-                const field = input.dataset. field;
+                const field = input.dataset.field;
                 const category = categories.find(c => c.id === categoryId);
                 if (category) {
                     category[field] = input.value;
@@ -989,7 +1261,7 @@ function renderCategoriesSettings() {
             });
         });
         
-        item.querySelector('.delete-btn'). addEventListener('click', () => {
+        item.querySelector('.delete-btn').addEventListener('click', () => {
             if (categories.length > 1) {
                 deleteCategory(categoryId);
             }
@@ -1016,7 +1288,7 @@ function addCategory() {
 }
 
 function deleteCategory(categoryId) {
-    categories = categories. filter(c => c.id !== categoryId);
+    categories = categories.filter(c => c.id !== categoryId);
     delete links[categoryId];
     
     saveCategories(categories);
@@ -1024,6 +1296,73 @@ function deleteCategory(categoryId) {
     renderCategoriesSettings();
     renderLinksGrid();
     updateLinkCategorySelect();
+}
+
+// Category drag and drop handlers
+let draggedCategoryElement = null;
+
+function handleCategoryDragStart(e) {
+    draggedCategoryElement = e.target.closest('.category-item');
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.target.innerHTML);
+}
+
+function handleCategoryDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    
+    const target = e.target.closest('.category-item');
+    if (target && target !== draggedCategoryElement) {
+        target.classList.add('drag-over');
+    }
+    
+    return false;
+}
+
+function handleCategoryDrop(e) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+    
+    const target = e.target.closest('.category-item');
+    if (!target || !draggedCategoryElement || target === draggedCategoryElement) {
+        return false;
+    }
+    
+    const draggedId = draggedCategoryElement.dataset.id;
+    const targetId = target.dataset.id;
+    
+    const draggedIndex = categories.findIndex(c => c.id === draggedId);
+    const targetIndex = categories.findIndex(c => c.id === targetId);
+    
+    if (draggedIndex !== -1 && targetIndex !== -1) {
+        // Reorder categories array
+        const [draggedCategory] = categories.splice(draggedIndex, 1);
+        categories.splice(targetIndex, 0, draggedCategory);
+        
+        saveCategories(categories);
+        renderCategoriesSettings();
+        renderLinksGrid();
+    }
+    
+    return false;
+}
+
+function handleCategoryDragEnd(e) {
+    e.target.classList.remove('dragging');
+    document.querySelectorAll('.category-item').forEach(item => {
+        item.classList.remove('drag-over');
+    });
+}
+
+function handleCategoryDragLeave(e) {
+    const target = e.target.closest('.category-item');
+    if (target) {
+        target.classList.remove('drag-over');
+    }
 }
 
 // ========================================
@@ -1034,7 +1373,7 @@ function renderLinksSettings() {
     updateLinkCategorySelect();
     const select = document.getElementById('link-category-select');
     if (select && select.value) {
-        renderLinksForCategory(select. value);
+        renderLinksForCategory(select.value);
     } else {
         const container = document.getElementById('links-list');
         if (container) container.innerHTML = '';
@@ -1050,8 +1389,8 @@ function updateLinkCategorySelect() {
     select.innerHTML = '<option value="">-- Select a category --</option>' +
         categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
     
-    if (categories.find(c => c. id === currentValue)) {
-        select. value = currentValue;
+    if (categories.find(c => c.id === currentValue)) {
+        select.value = currentValue;
     }
 }
 
@@ -1070,7 +1409,7 @@ function renderLinksForCategory(categoryId) {
     const categoryLinks = links[categoryId] || [];
     
     container.innerHTML = categoryLinks.map((link, index) => `
-        <div class="link-item" data-index="${index}">
+        <div class="link-item" data-index="${index}" draggable="true">
             <span class="icon-preview"><i class="${link.icon || 'fa-solid fa-link'}"></i></span>
             <input type="text" class="icon-input" value="${link.icon || 'fa-solid fa-link'}" placeholder="fa-solid fa-link" data-field="icon">
             <input type="text" value="${link.name}" placeholder="Link Name" maxlength="20" data-field="name">
@@ -1090,9 +1429,16 @@ function renderLinksForCategory(categoryId) {
         const index = parseInt(item.dataset.index);
         const iconPreview = item.querySelector('.icon-preview i');
         
+        // Drag and drop events
+        item.addEventListener('dragstart', (e) => handleLinkDragStart(e, categoryId));
+        item.addEventListener('dragover', handleLinkDragOver);
+        item.addEventListener('drop', (e) => handleLinkDrop(e, categoryId));
+        item.addEventListener('dragend', handleLinkDragEnd);
+        item.addEventListener('dragleave', handleLinkDragLeave);
+        
         item.querySelectorAll('input').forEach(input => {
             input.addEventListener('input', () => {
-                const field = input.dataset. field;
+                const field = input.dataset.field;
                 if (links[categoryId] && links[categoryId][index]) {
                     links[categoryId][index][field] = input.value;
                     saveLinks(links);
@@ -1100,13 +1446,13 @@ function renderLinksForCategory(categoryId) {
                     
                     // Update icon preview
                     if (field === 'icon' && iconPreview) {
-                        iconPreview. className = input.value || 'fa-solid fa-link';
+                        iconPreview.className = input.value || 'fa-solid fa-link';
                     }
                 }
             });
         });
         
-        item.querySelector('.delete-btn'). addEventListener('click', () => {
+        item.querySelector('.delete-btn').addEventListener('click', () => {
             deleteLink(categoryId, index);
         });
     });
@@ -1136,10 +1482,74 @@ function addLink() {
 
 function deleteLink(categoryId, index) {
     if (links[categoryId]) {
-        links[categoryId]. splice(index, 1);
+        links[categoryId].splice(index, 1);
         saveLinks(links);
         renderLinksForCategory(categoryId);
         renderLinksGrid();
+    }
+}
+
+// Link drag and drop handlers
+let draggedLinkElement = null;
+
+function handleLinkDragStart(e, categoryId) {
+    draggedLinkElement = e.target.closest('.link-item');
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', e.target.innerHTML);
+}
+
+function handleLinkDragOver(e) {
+    if (e.preventDefault) {
+        e.preventDefault();
+    }
+    e.dataTransfer.dropEffect = 'move';
+    
+    const target = e.target.closest('.link-item');
+    if (target && target !== draggedLinkElement) {
+        target.classList.add('drag-over');
+    }
+    
+    return false;
+}
+
+function handleLinkDrop(e, categoryId) {
+    if (e.stopPropagation) {
+        e.stopPropagation();
+    }
+    
+    const target = e.target.closest('.link-item');
+    if (!target || !draggedLinkElement || target === draggedLinkElement) {
+        return false;
+    }
+    
+    const draggedIndex = parseInt(draggedLinkElement.dataset.index);
+    const targetIndex = parseInt(target.dataset.index);
+    
+    if (!isNaN(draggedIndex) && !isNaN(targetIndex) && links[categoryId]) {
+        // Reorder links array
+        const [draggedLink] = links[categoryId].splice(draggedIndex, 1);
+        links[categoryId].splice(targetIndex, 0, draggedLink);
+        
+        saveLinks(links);
+        renderLinksForCategory(categoryId);
+        renderLinksGrid();
+    }
+    
+    return false;
+}
+
+function handleLinkDragEnd(e) {
+    e.target.classList.remove('dragging');
+    document.querySelectorAll('.link-item').forEach(item => {
+        item.classList.remove('drag-over');
+    });
+}
+
+function handleLinkDragLeave(e) {
+    const target = e.target.closest('.link-item');
+    if (target) {
+        target.classList.remove('drag-over');
     }
 }
 
@@ -1207,6 +1617,67 @@ function renderSocialLinksSettings() {
 }
 
 // ========================================
+// Header Settings Management
+// ========================================
+
+function renderHeaderSettings() {
+    const headerLeftSelect = document.getElementById('header-left-select');
+    const headerRightSelect = document.getElementById('header-right-select');
+    
+    // Set initial values
+    if (headerLeftSelect) {
+        headerLeftSelect.value = settings.headerLeft;
+    }
+    
+    if (headerRightSelect) {
+        headerRightSelect.value = settings.headerRight;
+    }
+    
+    // Add change listeners with anti-duplicate logic
+    if (headerLeftSelect) {
+        headerLeftSelect.addEventListener('change', (e) => {
+            const newValue = e.target.value;
+            
+            // If selecting greeting or time-date, update the other selector
+            if (newValue === 'greeting' && settings.headerRight === 'greeting') {
+                settings.headerRight = 'time-date';
+                if (headerRightSelect) headerRightSelect.value = 'time-date';
+                saveSettings('headerRight', 'time-date');
+            } else if (newValue === 'time-date' && settings.headerRight === 'time-date') {
+                settings.headerRight = 'greeting';
+                if (headerRightSelect) headerRightSelect.value = 'greeting';
+                saveSettings('headerRight', 'greeting');
+            }
+            
+            settings.headerLeft = newValue;
+            saveSettings('headerLeft', newValue);
+            updateHeader();
+        });
+    }
+    
+    if (headerRightSelect) {
+        headerRightSelect.addEventListener('change', (e) => {
+            const newValue = e.target.value;
+            
+            // If selecting greeting or time-date, update the other selector
+            if (newValue === 'greeting' && settings.headerLeft === 'greeting') {
+                settings.headerLeft = 'time-date';
+                if (headerLeftSelect) headerLeftSelect.value = 'time-date';
+                saveSettings('headerLeft', 'time-date');
+            } else if (newValue === 'time-date' && settings.headerLeft === 'time-date') {
+                settings.headerLeft = 'greeting';
+                if (headerLeftSelect) headerLeftSelect.value = 'greeting';
+                saveSettings('headerLeft', 'greeting');
+            }
+            
+            settings.headerRight = newValue;
+            saveSettings('headerRight', newValue);
+            updateHeader();
+        });
+    }
+}
+
+// ========================================
 // Footer Settings Management
 // ========================================
 
@@ -1247,7 +1718,7 @@ function renderFooterSettings() {
 
 function handleKeyboard(event) {
     const settingsOverlay = document.getElementById('settings-overlay');
-    const isSettingsOpen = settingsOverlay && settingsOverlay. classList.contains('active');
+    const isSettingsOpen = settingsOverlay && settingsOverlay.classList.contains('active');
     
     if (event.key === '/' && document.activeElement !== searchInput && !isSettingsOpen) {
         event.preventDefault();
@@ -1349,7 +1820,7 @@ function init() {
     greetingElement = document.getElementById('greeting');
     weatherElement = document.getElementById('weather');
     quoteElement = document.getElementById('quote');
-    linksGrid = document. getElementById('links-grid');
+    linksGrid = document.getElementById('links-grid');
     
     // Hide "New Window" option on Safari (it behaves the same as "New Tab")
     if (isSafari) {
@@ -1390,7 +1861,8 @@ function init() {
     // Set random quote
     updateQuote();
     
-    // Update footer layout
+    // Update header and footer layout
+    updateHeader();
     updateFooter();
     
     // Restore preferred search engine

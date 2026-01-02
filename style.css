@@ -881,7 +881,7 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: var(--spacing-xl);
+    padding: var(--spacing-lg);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -996,8 +996,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-lg) 0;
-    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-md) 0;
+    margin-bottom: var(--spacing-lg);
 }
 
 .greeting {
@@ -1007,7 +1007,7 @@ body {
 }
 
 .greeting .icon {
-    font-size: 2rem;
+    font-size: 1.75rem;
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1021,7 +1021,7 @@ body {
 }
 
 .greeting-text {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 600;
     color: var(--text);
 }
@@ -1640,8 +1640,8 @@ body {
 /* Links Grid */
 .links-grid {
     display: grid;
-    gap: var(--spacing-xl);
-    margin-bottom: var(--spacing-xl);
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
 }
 
 /* Even number of categories: 2 columns (2, 4, 6, 8...) */
@@ -1689,7 +1689,7 @@ body {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
     backdrop-filter: blur(20px);
     box-shadow: var(--glass-shadow);
     transition: transform var(--transition-normal), box-shadow var(--transition-normal);
@@ -1711,7 +1711,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--subtext0);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
     padding-bottom: var(--spacing-sm);
     border-bottom: 1px solid var(--glass-border);
 }
@@ -1813,9 +1813,9 @@ body {
 }
 
 .link-icon {
-    font-size: 1.4rem;
-    width: 32px;
-    height: 32px;
+    font-size: 1.25rem;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2043,12 +2043,12 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-lg);
+    padding: var(--spacing-md);
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
     backdrop-filter: blur(20px);
-    gap: var(--spacing-xl);
+    gap: var(--spacing-lg);
 }
 
 .widget {
@@ -2059,7 +2059,7 @@ body {
 }
 
 .widget-icon {
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     color: var(--accent);
 }
 
@@ -2473,4 +2473,86 @@ kbd {
     .glow {
         animation: none;
     }
+}
+
+/* Custom Colors Section */
+.custom-colors-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.color-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.color-input-group label {
+    font-size: 0.875rem;
+    color: var(--subtext0);
+    font-weight: 500;
+}
+
+.color-picker-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.color-picker-wrapper input[type="color"] {
+    width: 50px;
+    height: 40px;
+    border: 1px solid var(--surface1);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    background: transparent;
+}
+
+.color-picker-wrapper .hex-input {
+    flex: 1;
+    max-width: 120px;
+    padding: 0.5rem;
+    background: var(--surface0);
+    border: 1px solid var(--surface1);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-family: monospace;
+    font-size: 0.875rem;
+}
+
+.color-picker-wrapper .hex-input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .custom-colors-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Drag and Drop Styles */
+.category-item,
+.link-item {
+    cursor: move;
+    transition: all 0.2s ease;
+}
+
+.category-item.dragging,
+.link-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+}
+
+.category-item.drag-over,
+.link-item.drag-over {
+    border-top: 2px solid var(--primary);
+    padding-top: 2px;
+}
+
+.category-item:hover,
+.link-item:hover {
+    background: var(--surface1);
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-scheme="catppuccin" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,6 +47,9 @@
                     <button class="settings-tab active" data-tab="general">
                         <i class="fa-solid fa-sliders"></i> General
                     </button>
+                    <button class="settings-tab" data-tab="appearance">
+                        <i class="fa-solid fa-paintbrush"></i> Appearance
+                    </button>
                     <button class="settings-tab" data-tab="categories">
                         <i class="fa-solid fa-folder"></i> Categories
                     </button>
@@ -55,6 +58,9 @@
                     </button>
                     <button class="settings-tab" data-tab="social">
                         <i class="fa-solid fa-share-nodes"></i> Social
+                    </button>
+                    <button class="settings-tab" data-tab="header">
+                        <i class="fa-solid fa-arrow-up"></i> Header
                     </button>
                     <button class="settings-tab" data-tab="footer">
                         <i class="fa-solid fa-align-justify"></i> Footer
@@ -73,46 +79,6 @@
                                 <span>Your Name (optional)</span>
                             </div>
                             <input type="text" id="setting-name" class="setting-input" placeholder="Enter your name" maxlength="20">
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <i class="fa-solid fa-palette"></i>
-                                <span>Color Scheme</span>
-                            </div>
-                            <select id="color-scheme-select" class="setting-select">
-                                <option value="catppuccin">Catppuccin</option>
-                                <option value="nord">Nord</option>
-                                <option value="gruvbox">Gruvbox</option>
-                                <option value="tokyo-night">Tokyo Night</option>
-                                <option value="dracula">Dracula</option>
-                                <option value="solarized">Solarized</option>
-                                <option value="kanagawa">Kanagawa</option>
-                                <option value="ayu">Ayu</option>
-                                <option value="monochrome">Monochrome</option>
-                            </select>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <i class="fa-solid fa-circle-half-stroke"></i>
-                                <span>Mode</span>
-                            </div>
-                            <div class="setting-toggle">
-                                <button class="toggle-btn" data-setting="theme" data-value="dark"><i class="fa-solid fa-moon"></i> Dark</button>
-                                <button class="toggle-btn" data-setting="theme" data-value="light"><i class="fa-solid fa-sun"></i> Light</button>
-                            </div>
-                        </div>
-                        
-                        <div class="setting-item">
-                            <div class="setting-label">
-                                <i class="fa-solid fa-swatchbook"></i>
-                                <span>Category Colors</span>
-                            </div>
-                            <div class="setting-toggle">
-                                <button class="toggle-btn" data-setting="colorMode" data-value="multi"><i class="fa-solid fa-rainbow"></i> Multi</button>
-                                <button class="toggle-btn" data-setting="colorMode" data-value="single"><i class="fa-solid fa-circle"></i> Single</button>
-                            </div>
                         </div>
                         
                         <div class="setting-item">
@@ -259,6 +225,101 @@
                         </div>
                     </div>
                     
+                    <!-- Appearance Tab -->
+                    <div class="settings-panel" data-panel="appearance">
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-palette"></i>
+                                <span>Color Scheme</span>
+                            </div>
+                            <select id="color-scheme-select" class="setting-select">
+                                <option value="catppuccin">Catppuccin</option>
+                                <option value="nord">Nord</option>
+                                <option value="gruvbox">Gruvbox</option>
+                                <option value="tokyo-night">Tokyo Night</option>
+                                <option value="dracula">Dracula</option>
+                                <option value="solarized">Solarized</option>
+                                <option value="kanagawa">Kanagawa</option>
+                                <option value="ayu">Ayu</option>
+                                <option value="monochrome">Monochrome</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item" id="custom-colors-section" style="display: none;">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-droplet"></i>
+                                <span>Custom Colors</span>
+                            </div>
+                            <div class="custom-colors-grid">
+                                <div class="color-input-group">
+                                    <label>Primary</label>
+                                    <div class="color-picker-wrapper">
+                                        <input type="color" id="custom-primary" value="#cba6f7">
+                                        <input type="text" class="hex-input" id="custom-primary-hex" value="#cba6f7" maxlength="7">
+                                    </div>
+                                </div>
+                                <div class="color-input-group">
+                                    <label>Secondary</label>
+                                    <div class="color-picker-wrapper">
+                                        <input type="color" id="custom-secondary" value="#89b4fa">
+                                        <input type="text" class="hex-input" id="custom-secondary-hex" value="#89b4fa" maxlength="7">
+                                    </div>
+                                </div>
+                                <div class="color-input-group">
+                                    <label>Accent</label>
+                                    <div class="color-picker-wrapper">
+                                        <input type="color" id="custom-accent" value="#94e2d5">
+                                        <input type="text" class="hex-input" id="custom-accent-hex" value="#94e2d5" maxlength="7">
+                                    </div>
+                                </div>
+                                <div class="color-input-group">
+                                    <label>Background</label>
+                                    <div class="color-picker-wrapper">
+                                        <input type="color" id="custom-background" value="#1e1e2e">
+                                        <input type="text" class="hex-input" id="custom-background-hex" value="#1e1e2e" maxlength="7">
+                                    </div>
+                                </div>
+                                <div class="color-input-group">
+                                    <label>Surface</label>
+                                    <div class="color-picker-wrapper">
+                                        <input type="color" id="custom-surface" value="#313244">
+                                        <input type="text" class="hex-input" id="custom-surface-hex" value="#313244" maxlength="7">
+                                    </div>
+                                </div>
+                                <div class="color-input-group">
+                                    <label>Text</label>
+                                    <div class="color-picker-wrapper">
+                                        <input type="color" id="custom-text" value="#cdd6f4">
+                                        <input type="text" class="hex-input" id="custom-text-hex" value="#cdd6f4" maxlength="7">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-circle-half-stroke"></i>
+                                <span>Mode</span>
+                            </div>
+                            <div class="setting-toggle">
+                                <button class="toggle-btn" data-setting="theme" data-value="dark"><i class="fa-solid fa-moon"></i> Dark</button>
+                                <button class="toggle-btn" data-setting="theme" data-value="light"><i class="fa-solid fa-sun"></i> Light</button>
+                            </div>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-swatchbook"></i>
+                                <span>Category Colors</span>
+                            </div>
+                            <div class="setting-toggle" id="color-mode-toggle">
+                                <button class="toggle-btn" data-setting="colorMode" data-value="multi"><i class="fa-solid fa-rainbow"></i> Multi</button>
+                                <button class="toggle-btn" data-setting="colorMode" data-value="single"><i class="fa-solid fa-circle"></i> Single</button>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <!-- Categories Tab -->
                     <div class="settings-panel" data-panel="categories">
                         <p class="panel-description">Add up to 8 categories. You can use emoji or text for icons.</p>
@@ -292,6 +353,35 @@
                         <p class="panel-description">Configure your social media links to display in the footer.</p>
                         <div class="social-links-list" id="social-links-list">
                             <!-- Social links will be populated dynamically -->
+                        </div>
+                    </div>
+                    
+                    <!-- Header Tab -->
+                    <div class="settings-panel" data-panel="header">
+                        <p class="panel-description">Customize the header layout by selecting what to display in each section.</p>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-align-left"></i>
+                                <span>Left Widget</span>
+                            </div>
+                            <select id="header-left-select" class="setting-select" data-setting="headerLeft">
+                                <option value="greeting">Greeting</option>
+                                <option value="time-date">Time & Date</option>
+                                <option value="blank">Blank</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-label">
+                                <i class="fa-solid fa-align-right"></i>
+                                <span>Right Widget</span>
+                            </div>
+                            <select id="header-right-select" class="setting-select" data-setting="headerRight">
+                                <option value="greeting">Greeting</option>
+                                <option value="time-date">Time & Date</option>
+                                <option value="blank">Blank</option>
+                            </select>
                         </div>
                     </div>
                     
@@ -438,7 +528,7 @@
         <!-- Developer Credits -->
         <div class="developer-credits">
             <div class="credits-content">
-                <span class="credits-text">Developed by Vegvisir Design with help and support from the <a href="https://github.com" target="_blank" class="credits-link">GitHub Community</a></span>
+                <span class="credits-text">© 2026 Vegvisir Design - MIT License</span>
             </div>
         </div>
     </div>
