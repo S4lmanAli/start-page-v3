@@ -2711,15 +2711,12 @@ function extractBookmarks(doc) {
     
     // Function to process a folder/category
     function processFolder(folderElement, parentName = '') {
-        // Get folder name from DT > H3 or DT > A
-        const dt = folderElement.querySelector('dt');
-        if (!dt) return null;
-        
-        const h3 = dt.querySelector('h3');
+        // Get folder name from the H3 that's a direct child of this DT
+        const h3 = folderElement.querySelector(':scope > h3');
         const folderName = h3 ? h3.textContent.trim() : 'Bookmarks';
         
-        // Skip empty folders or toolbar folders without meaningful content
-        const dl = folderElement.querySelector('dl');
+        // Find the DL that contains the links/subfolders for this folder
+        const dl = folderElement.querySelector(':scope > dl');
         if (!dl) return null;
         
         const bookmarkLinks = [];
@@ -2728,10 +2725,17 @@ function extractBookmarks(doc) {
         const dtElements = dl.querySelectorAll(':scope > dt');
         dtElements.forEach(dtElem => {
             // Check if it's a link or another folder
-            const anchor = dtElem.querySelector('a:not(h3 ~ a)');
-            const subFolder = dtElem.querySelector('h3');
+            const subH3 = dtElem.querySelector(':scope > h3');
+            const anchor = dtElem.querySelector(':scope > a');
             
-            if (anchor && !subFolder) {
+            if (subH3) {
+                // It's a subfolder - process recursively
+                const subFolderData = processFolder(dtElem, folderName);
+                if (subFolderData) {
+                    categories.push(subFolderData.category);
+                    links[subFolderData.category.id] = subFolderData.links;
+                }
+            } else if (anchor) {
                 // It's a bookmark link
                 const url = anchor.getAttribute('href');
                 const name = anchor.textContent.trim();
@@ -2740,15 +2744,8 @@ function extractBookmarks(doc) {
                     bookmarkLinks.push({
                         name: name,
                         url: url,
-                        icon: 'fa-solid fa-link'
+                        icon: ''  // Leave icon blank for user to set
                     });
-                }
-            } else if (subFolder) {
-                // It's a subfolder - process recursively
-                const subFolderData = processFolder(dtElem, folderName);
-                if (subFolderData) {
-                    categories.push(subFolderData.category);
-                    links[subFolderData.category.id] = subFolderData.links;
                 }
             }
         });
@@ -2759,7 +2756,7 @@ function extractBookmarks(doc) {
             const category = {
                 id: categoryId,
                 name: folderName,
-                icon: 'fa-solid fa-folder',
+                icon: '',  // Leave icon blank for user to set
                 color: categoryColors[(categoryIdCounter - 2) % categoryColors.length]
             };
             
@@ -2779,8 +2776,8 @@ function extractBookmarks(doc) {
     // Process all top-level DT elements
     const topLevelDTs = rootDL.querySelectorAll(':scope > dt');
     topLevelDTs.forEach(dtElem => {
-        const h3 = dtElem.querySelector('h3');
-        const anchor = dtElem.querySelector('a:not(h3 ~ a)');
+        const h3 = dtElem.querySelector(':scope > h3');
+        const anchor = dtElem.querySelector(':scope > a');
         
         if (h3) {
             // It's a folder
@@ -2801,7 +2798,7 @@ function extractBookmarks(doc) {
                     otherCategory = {
                         id: 'imported-other',
                         name: 'Other Bookmarks',
-                        icon: 'fa-solid fa-bookmark',
+                        icon: '',  // Leave icon blank for user to set
                         color: 'blue'
                     };
                     categories.push(otherCategory);
@@ -2811,7 +2808,7 @@ function extractBookmarks(doc) {
                 links[otherCategory.id].push({
                     name: name,
                     url: url,
-                    icon: 'fa-solid fa-link'
+                    icon: ''  // Leave icon blank for user to set
                 });
             }
         }
