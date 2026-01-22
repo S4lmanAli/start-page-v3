@@ -6,7 +6,27 @@ Transform your browser's new tab into a beautiful, personalized workspace with S
 
 ## 🎉 UPDATES - January 2026
 
-### 📥 **Bookmark Import Wizard** (v1.4.0)
+### � **Full Mobile Support** (v1.5.0)
+Sip now works beautifully on mobile devices!
+
+- **Floating Action Button (FAB)** - Settings accessible via a purple gear icon in the bottom-right corner
+- **Touch-Optimized Interface** - All buttons and links meet the 44px minimum touch target size
+- **Responsive Settings Modal** - Full-screen modal on mobile with properly sized inputs that don't overflow
+- **Mobile-First Defaults** - Automatically applies optimal settings on mobile:
+  - Single search engine (Google) for cleaner interface
+  - Compact density for more content
+  - Centered footer layout
+  - Hidden keyboard shortcuts (not needed on touch devices)
+- **Clean Search Experience** - Search engine icons hidden on mobile; placeholder text indicates active engine
+- **Proper Viewport Configuration** - Optimized meta tags for iOS and Android devices
+- **Touch Feedback** - Active states replace hover effects on touch devices
+- **Performance Optimized** - Smooth momentum scrolling and prevented text inflation
+- **Adaptive Layout** - Categories, links, and settings automatically adjust to small screens
+
+### 🔍 **Kagi Search Engine** (v1.5.0)
+Added support for Kagi search engine alongside existing options (Google, DuckDuckGo, GitHub, YouTube, etc.)
+
+### �📥 **Bookmark Import Wizard** (v1.4.0)
 Import your existing browser bookmarks with ease!
 
 - **One-Click Import** - Select your browser's HTML bookmark export file
