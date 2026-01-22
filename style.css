@@ -868,6 +868,10 @@
 html {
     font-size: 16px;
     scroll-behavior: smooth;
+    /* Improve touch scrolling on mobile */
+    -webkit-overflow-scrolling: touch;
+    /* Prevent text inflation on mobile */
+    -webkit-text-size-adjust: 100%;
 }
 
 body {
@@ -1130,6 +1134,35 @@ body {
 .settings-close:hover {
     background: var(--surface0);
     color: var(--red);
+}
+
+/* Settings FAB (mobile only) */
+.settings-fab {
+    display: none;
+    position: fixed;
+    bottom: var(--spacing-xl);
+    right: var(--spacing-xl);
+    width: 56px;
+    height: 56px;
+    background: var(--primary);
+    color: var(--base);
+    border: none;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 999;
+    transition: all var(--transition-fast);
+}
+
+.settings-fab:hover {
+    background: var(--mauve);
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.settings-fab:active {
+    transform: scale(0.95);
 }
 
 /* Settings Tabs */
@@ -2278,13 +2311,14 @@ kbd {
 /* Responsive Design */
 @media (max-width: 768px) {
     .container {
-        padding: var(--spacing-lg);
+        padding: var(--spacing-md);
     }
     
     .header {
         flex-direction: column;
         text-align: center;
-        gap: var(--spacing-lg);
+        gap: var(--spacing-md);
+        padding: var(--spacing-md) 0;
     }
     
     .header-right {
@@ -2295,8 +2329,81 @@ kbd {
         text-align: center;
     }
     
+    /* Show FAB, hide toolbar settings button */
+    .settings-fab {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #settings-btn {
+        display: none;
+    }
+    
     .settings-modal {
-        margin: var(--spacing-md);
+        margin: 0;
+        max-height: 100vh;
+        height: 100vh;
+        width: 100%;
+        max-width: 100%;
+        border-radius: 0;
+    }
+    
+    .settings-body {
+        padding: var(--spacing-md);
+    }
+    
+    /* Fix input field overflow */
+    .setting-input,
+    .setting-select {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-sm);
+    }
+    
+    .setting-label {
+        width: 100%;
+    }
+    
+    .setting-input,
+    .setting-select,
+    .backup-buttons {
+        width: 100%;
+    }
+    
+    /* Categories and Links items */
+    .category-item,
+    .link-item {
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+    
+    .category-input,
+    .link-input {
+        min-width: 100%;
+        flex: 1 1 100%;
+    }
+    
+    .icon-input {
+        flex: 1 1 auto;
+    }
+    
+    /* Settings tabs scrollable on small screens */
+    .settings-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: var(--spacing-xs);
+    }
+    
+    .settings-tab {
+        flex-shrink: 0;
+        min-width: 100px;
     }
     
     .time {
@@ -2308,6 +2415,11 @@ kbd {
         padding: var(--spacing-md);
     }
     
+    #search {
+        font-size: 1rem;
+        min-height: 44px;
+    }
+    
     .search-engines {
         border-left: none;
         border-top: 1px solid var(--glass-border);
@@ -2317,19 +2429,57 @@ kbd {
         padding-top: var(--spacing-sm);
         width: 100%;
         justify-content: center;
+        gap: var(--spacing-sm);
+    }
+    
+    .search-engine-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    .engine-checkbox {
+        padding: var(--spacing-md);
+    }
+    
+    .search-engine {
+        min-width: 44px;
+        min-height: 44px;
+        padding: var(--spacing-sm);
     }
     
     .links {
         grid-template-columns: 1fr;
     }
     
+    .link-card {
+        min-height: 44px;
+        padding: var(--spacing-md);
+    }
+    
+    .settings-btn,
+    .theme-toggle {
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
     .footer {
         flex-direction: column;
         text-align: center;
+        gap: var(--spacing-md);
+        padding: var(--spacing-lg) 0;
     }
     
     .keyboard-hints {
         display: none;
+    }
+    
+    /* Remove hover effects on mobile */
+    .link-card:hover {
+        transform: none;
+    }
+    
+    .search-engine:hover {
+        transform: none;
     }
 }
 
@@ -2338,12 +2488,46 @@ kbd {
         font-size: 14px;
     }
     
+    .container {
+        padding: var(--spacing-sm);
+    }
+    
     .greeting-text {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+    }
+    
+    .greeting .icon {
+        font-size: 1.5rem;
     }
     
     .time {
         font-size: 1.8rem;
+    }
+    
+    .date {
+        font-size: 0.85rem;
+    }
+    
+    .links-grid {
+        gap: var(--spacing-md);
+    }
+    
+    .link-card {
+        padding: var(--spacing-md) var(--spacing-lg);
+    }
+    
+    .category-title {
+        font-size: 0.75rem;
+    }
+    
+    .widgets-bar {
+        flex-direction: column;
+        gap: var(--spacing-md);
+    }
+    
+    .widget {
+        width: 100%;
+        justify-content: center;
     }
 }
 
@@ -2356,6 +2540,50 @@ kbd {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* ========================================
+   Touch & Mobile Optimizations
+   ======================================== */
+
+/* Remove tap highlight on mobile */
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Improve button touch feedback */
+button,
+.link-card,
+.search-engine,
+.settings-btn,
+.theme-toggle {
+    touch-action: manipulation;
+}
+
+/* Active states for touch devices */
+@media (hover: none) {
+    .link-card:active {
+        transform: scale(0.98);
+        opacity: 0.9;
+    }
+    
+    .search-engine:active {
+        transform: scale(0.95);
+        background: var(--surface1);
+    }
+    
+    button:active,
+    .settings-btn:active,
+    .theme-toggle:active {
+        transform: scale(0.95);
+    }
+}
+
+/* Hide elements on mobile */
+@media (max-width: 768px) {
+    .hide-on-mobile {
+        display: none !important;
     }
 }
 

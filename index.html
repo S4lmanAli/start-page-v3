@@ -2,7 +2,10 @@
 <html lang="en" data-scheme="catppuccin" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>startpage</title>
     <link rel="icon" type="image/x-icon" href="icons/favicon.ico">
     <!-- Font Awesome 6 -->
@@ -30,6 +33,10 @@
                     <span class="date" id="date">Thursday, Nov 28</span>
                 </div>
             </div>
+            <!-- Settings FAB for mobile -->
+            <button class="settings-fab" id="settings-fab" title="Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
         </header>
 
         <!-- Settings Modal -->
@@ -215,6 +222,11 @@
                                     <span class="engine-icon"><i class="fa-solid fa-box-archive"></i></span>
                                     <span>Internet Archive</span>
                                 </label>
+                                <label class="engine-checkbox">
+                                    <input type="checkbox" data-engine="kagi">
+                                    <span class="engine-icon"><i class="fa-brands fa-kaggle"></i></span>
+                                    <span>Kagi</span>
+                                </label>
                             </div>
                         </div>
                         
@@ -237,7 +249,7 @@
                             </div>
                         </div>
                         
-                        <div class="setting-item">
+                        <div class="setting-item hide-on-mobile">
                             <div class="setting-label">
                                 <i class="fa-solid fa-bookmark"></i>
                                 <div>
@@ -467,7 +479,7 @@
                     <div class="settings-panel" data-panel="footer">
                         <p class="panel-description">Customize the footer layout by selecting what to display in each section.</p>
                         
-                        <div class="setting-item">
+                        <div class="setting-item hide-on-mobile">
                             <div class="setting-label">
                                 <i class="fa-solid fa-align-left"></i>
                                 <span>Left Section</span>
@@ -495,7 +507,7 @@
                             </select>
                         </div>
                         
-                        <div class="setting-item">
+                        <div class="setting-item hide-on-mobile">
                             <div class="setting-label">
                                 <i class="fa-solid fa-align-right"></i>
                                 <span>Right Section</span>

@@ -8,6 +8,12 @@
 
 const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
+// Mobile detection
+const isMobile = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+        || window.innerWidth <= 768;
+};
+
 // ========================================
 // Default Data
 // ========================================
@@ -105,6 +111,11 @@ const allSearchEngines = {
         name: 'Internet Archive',
         url: 'https://archive.org/search?query=',
         icon: '<i class="fa-solid fa-box-archive"></i>'
+    },
+    kagi: {
+        name: 'Kagi',
+        url: 'https://kagi.com/search?q=',
+        icon: '<i class="fa-brands fa-kaggle"></i>'
     }
 };
 
@@ -113,6 +124,8 @@ const allSearchEngines = {
 // ========================================
 
 function loadSettings() {
+    const mobile = isMobile();
+    
     const defaults = {
         userName: '',
         colorScheme: 'catppuccin',
@@ -122,18 +135,18 @@ function loadSettings() {
         showSeconds: 'false',
         tempUnit: 'F',
         showQuotes: 'true',
-        enabledEngines: ['google', 'duckduckgo', 'github', 'youtube'],
+        enabledEngines: mobile ? ['google'] : ['google', 'duckduckgo', 'github', 'youtube'],
         preferredEngine: 'google',
         weatherLocation: 'New York,NY,US',
         openWeatherApiKey: '',
         linkBehavior: 'same',
-        showKeyboardHints: 'true',
-        density: 'comfy',
+        showKeyboardHints: mobile ? 'false' : 'true',
+        density: mobile ? 'compact' : 'comfy',
         headerLeft: 'greeting',
         headerRight: 'time-date',
-        footerLeft: 'weather',
-        footerCenter: 'blank',
-        footerRight: 'quotes',
+        footerLeft: mobile ? 'blank' : 'weather',
+        footerCenter: mobile ? 'weather' : 'blank',
+        footerRight: mobile ? 'blank' : 'quotes',
         socialLinks: [],
         quotes: [
             '"The only way to do great work is to love what you do." - Steve Jobs',
@@ -1319,16 +1332,25 @@ function updateGridLayout() {
 
 function initSettings() {
     const settingsBtn = document.getElementById('settings-btn');
+    const settingsFab = document.getElementById('settings-fab');
     const settingsOverlay = document.getElementById('settings-overlay');
     const settingsClose = document.getElementById('settings-close');
     
-    if (!settingsBtn || !settingsOverlay || !settingsClose) return;
+    if (!settingsOverlay || !settingsClose) return;
     
-    // Open settings
-    settingsBtn.addEventListener('click', () => {
+    // Open settings from both button and FAB
+    const openSettings = () => {
         settingsOverlay.classList.add('active');
         populateSettingsUI();
-    });
+    };
+    
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', openSettings);
+    }
+    
+    if (settingsFab) {
+        settingsFab.addEventListener('click', openSettings);
+    }
     
     // Close settings
     settingsClose.addEventListener('click', () => {
