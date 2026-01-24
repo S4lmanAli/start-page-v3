@@ -201,8 +201,8 @@ Sip now includes 9 beautiful color schemes, each with both light and dark varian
 - Multi-color or monochrome category accent options
 
 **Smart Search**
-- Integrated search respecting your default search engine (Chrome)
-- Quick engine switching between 9 search providers (Google, DuckDuckGo, GitHub, Git, YouTube, Bing, Amazon, Wikipedia, Internet Archive)
+- Integrated search respecting your default search engine
+- Quick engine switching between 10 search providers (Google, DuckDuckGo, Kagi, GitHub, Git, YouTube, Bing, Amazon, Wikipedia, Internet Archive)
 - Keyboard shortcuts for lightning-fast navigation
 
 **Personalization**
@@ -215,6 +215,7 @@ Sip now includes 9 beautiful color schemes, each with both light and dark varian
 - **Social links integration** with 10 popular platforms
 - **Customizable footer layout** (left/center/right sections)
 - **Backup & Restore** - Easily migrate settings between browsers
+- **Bookmark Import Wizard** - Import HTML bookmarks with smart category detection
 
 **Productivity**
 - Organize your favorite sites in customizable categories
@@ -223,6 +224,7 @@ Sip now includes 9 beautiful color schemes, each with both light and dark varian
 - All settings persist locally (no data collection)
 - Keyboard shortcuts: `/` for search, `1-9` for engines, `Esc` to clear
 - Optional keyboard hints overlay
+- **Fully mobile responsive** with touch-optimized interface
 
 **Privacy First**
 - No data collection or tracking
@@ -331,10 +333,10 @@ Each screenshot demonstrates the glassmorphism effects, customizable categories,
 **Sip** is available as a browser extension:
 
 - **Chrome Web Store** - Coming soon!
-- **Firefox Add-ons** - Coming soon!
+- **Firefox Add-ons** - [Available now](https://addons.mozilla.org/) (supports Desktop & Android)
 - **Safari Extension** - [Build & install instructions](SAFARI-QUICKSTART.md)
 
-Once published, simply install from your browser's extension store and Sip will replace your new tab page.
+Once installed from your browser's extension store, Sip will replace your new tab page with a beautiful, customizable workspace.
 
 ### Safari Extension
 
