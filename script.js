@@ -144,6 +144,7 @@ function loadSettings() {
         linkBehavior: 'same',
         showKeyboardHints: mobile ? 'false' : 'true',
         density: mobile ? 'compact' : 'comfy',
+        iconOnlyMode: 'false',
         headerLeft: 'greeting',
         headerRight: 'time-date',
         footerLeft: mobile ? 'blank' : 'weather',
@@ -189,6 +190,7 @@ function loadSettings() {
         linkBehavior: localStorage.getItem('linkBehavior') ?? defaults.linkBehavior,
         showKeyboardHints: localStorage.getItem('showKeyboardHints') ?? defaults.showKeyboardHints,
         density: localStorage.getItem('density') ?? defaults.density,
+        iconOnlyMode: localStorage.getItem('iconOnlyMode') ?? defaults.iconOnlyMode,
         headerLeft: localStorage.getItem('headerLeft') ?? defaults.headerLeft,
         headerRight: localStorage.getItem('headerRight') ?? defaults.headerRight,
         footerLeft: localStorage.getItem('footerLeft') ?? defaults.footerLeft,
@@ -480,10 +482,16 @@ function applySearchVisibility() {
     updateKeyboardHints();
 }
 
+function applyIconOnlyMode(iconOnly) {
+    document.documentElement.setAttribute('data-icon-only', iconOnly);
+    saveSettings('iconOnlyMode', iconOnly);
+}
+
 // Apply saved theme and color scheme immediately
 applyTheme(settings.theme);
 applyColorScheme(settings.colorScheme);
 applyDensity(settings.density);
+applyIconOnlyMode(settings.iconOnlyMode);
 
 // If custom scheme is active, apply custom colors
 if (settings.colorScheme === 'custom') {
@@ -1457,6 +1465,8 @@ function initSettings() {
                 applyDensity(value);
             } else if (setting === 'timeFormat') {
                 updateDateTime();
+            } else if (setting === 'iconOnlyMode') {
+                applyIconOnlyMode(value);
             } else if (setting === 'showSeconds') {
                 updateDateTime();
             } else if (setting === 'tempUnit') {

@@ -2016,6 +2016,36 @@ body {
     white-space: nowrap;
 }
 
+/* Icon-only mode for mobile */
+@media (max-width: 768px) {
+    [data-icon-only="true"] .link-text {
+        display: none;
+    }
+    
+    [data-icon-only="true"] .link-card {
+        flex-direction: column;
+        justify-content: center;
+        padding: var(--spacing-lg);
+        min-height: 80px;
+    }
+    
+    [data-icon-only="true"] .link-icon {
+        font-size: 2rem;
+    }
+    
+    [data-icon-only="true"] .links {
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--spacing-sm);
+    }
+}
+
+/* Hide on desktop */
+@media (min-width: 769px) {
+    .hide-on-desktop {
+        display: none !important;
+    }
+}
+
 /* Help Modal */
 .help-overlay {
     position: fixed;
