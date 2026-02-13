@@ -26,7 +26,7 @@ Sip now works beautifully on mobile devices!
 ### 🔍 **Kagi Search Engine** (v1.5.0)
 Added support for Kagi search engine alongside existing options (Google, DuckDuckGo, GitHub, YouTube, etc.)
 
-### �📥 **Bookmark Import Wizard** (v1.4.0)
+### 📥 **Bookmark Import Wizard** (v1.4.0)
 Import your existing browser bookmarks with ease!
 
 - **One-Click Import** - Select your browser's HTML bookmark export file
