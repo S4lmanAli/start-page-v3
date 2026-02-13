@@ -2,7 +2,20 @@
 
 Transform your browser's new tab into a beautiful, personalized workspace with Sip. Featuring stunning color themes, glassmorphism effects, and intelligent customization, Sip makes every new tab a delightful experience.
 
-🎉 WHAT'S NEW IN VERSION 1.5.1
+🎉 WHAT'S NEW IN VERSION 1.5.2
+
+📱 Mobile Icon Mode
+• New mobile-only feature to display links as icons only (hide labels)
+• 4-column grid layout with larger 2rem icons
+• Perfect for saving screen space on mobile devices
+• Toggle between "With Labels" and "Icons Only" modes
+
+🐛 Bug Fixes
+• Fixed export settings missing 11 configuration options
+• All settings now properly preserved in backups (preferredColumns, density, iconOnlyMode, customColors, background settings, and more)
+• Complete backup/restore functionality
+
+🎉 VERSION 1.5.1 FEATURES
 
 ⚙️ New Customization Options
 • Search Bar visibility toggle - Show or hide the search bar to maximize space
