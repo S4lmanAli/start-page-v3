@@ -6,7 +6,7 @@ Transform your browser's new tab into a beautiful, personalized workspace with S
 
 ## 🎉 UPDATES - January 2026
 
-### � **Full Mobile Support** (v1.5.0)
+### 📱 **Full Mobile Support** (v1.5.0)
 Sip now works beautifully on mobile devices!
 
 - **Floating Action Button (FAB)** - Settings accessible via a purple gear icon in the bottom-right corner
